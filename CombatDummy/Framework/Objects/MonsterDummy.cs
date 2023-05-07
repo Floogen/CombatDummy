@@ -1,7 +1,6 @@
 ﻿using CombatDummy.Framework.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Monsters;
 using System;
@@ -24,15 +23,31 @@ namespace CombatDummy.Framework.Objects
         {
             // Verify that the Target Dummy exists on the same tile
             // If it does not, delete this monster
-            var tilePosition = instance.getTileLocationPoint();
+            var tilePosition = new Point(0, 0);
+            if (instance.modData.TryGetValue(ModDataKeys.MONSTER_HOME_POSITION_X, out var rawHomeX) && int.TryParse(rawHomeX, out var actualHomeX))
+            {
+                tilePosition.X = actualHomeX;
+            }
+            if (instance.modData.TryGetValue(ModDataKeys.MONSTER_HOME_POSITION_Y, out var rawHomeY) && int.TryParse(rawHomeY, out var actualHomeY))
+            {
+                tilePosition.Y = actualHomeY;
+            }
             var practiceDummy = instance.currentLocation.getObjectAtTile(tilePosition.X, tilePosition.Y);
-            if (PracticeDummy.IsValid(practiceDummy) is false)
+            if (PracticeDummy.IsValid(practiceDummy) is false && KnockbackDummy.IsValid(practiceDummy) is false)
             {
                 instance.currentLocation.characters.Remove(instance);
                 return;
             }
 
-            CombatDummy.monitor.LogOnce($"[{DateTime.Now.ToString("T")}] {instance.xVelocity} vs {yTrajectory}", LogLevel.Debug);
+            if (KnockbackDummy.IsValid(practiceDummy))
+            {
+                // Update the practice dummy's velocity
+                var velocity = new Vector2(xTrajectory / 3, yTrajectory / 3);
+                KnockbackDummy.SetVelocity(practiceDummy, velocity);
+                KnockbackDummy.SetPosition(practiceDummy, KnockbackDummy.GetPosition(practiceDummy), velocity);
+
+                practiceDummy.modData[ModDataKeys.DUMMY_KNOCKBACK_COUNTDOWN] = 1500.ToString();
+            }
 
             // Label the damage amount
             int damageAmount = result;
@@ -75,9 +90,18 @@ namespace CombatDummy.Framework.Objects
         {
             // Verify that the Target Dummy exists on the same tile
             // If it does not, delete this monster
-            var tilePosition = instance.getTileLocationPoint();
+            var tilePosition = new Point(0, 0);
+            if (instance.modData.TryGetValue(ModDataKeys.MONSTER_HOME_POSITION_X, out var rawHomeX) && int.TryParse(rawHomeX, out var actualHomeX))
+            {
+                tilePosition.X = actualHomeX;
+            }
+            if (instance.modData.TryGetValue(ModDataKeys.MONSTER_HOME_POSITION_Y, out var rawHomeY) && int.TryParse(rawHomeY, out var actualHomeY))
+            {
+                tilePosition.Y = actualHomeY;
+            }
+
             var practiceDummy = instance.currentLocation.getObjectAtTile(tilePosition.X, tilePosition.Y);
-            if (PracticeDummy.IsValid(practiceDummy) is false)
+            if (PracticeDummy.IsValid(practiceDummy) is false && KnockbackDummy.IsValid(practiceDummy) is false)
             {
                 instance.currentLocation.characters.Remove(instance);
                 return;

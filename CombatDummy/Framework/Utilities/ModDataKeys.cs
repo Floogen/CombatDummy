@@ -7,6 +7,10 @@
         internal const string KNOCKBACK_DUMMY_NAME = "KnockbackDummy";
         internal const string MONSTER_DUMMY_FLAG = "PeacefulEnd.PracticeDummy.MonsterDummy";
 
+        // Monster related
+        internal const string MONSTER_HOME_POSITION_X = "PeacefulEnd.PracticeDummy.MonsterDummy.Home.X";
+        internal const string MONSTER_HOME_POSITION_Y = "PeacefulEnd.PracticeDummy.MonsterDummy.Home.Y";
+
         // Animation related
         internal const string IS_DUMMY_ANIMATING = "PeacefulEnd.PracticeDummy.IsAnimating";
         internal const string DUMMY_ANIMATION_FRAME = "PeacefulEnd.PracticeDummy.AnimationFrame";
@@ -15,8 +19,11 @@
         // Knockback related
         internal const string DUMMY_NEXT_POSITION_X = "PeacefulEnd.PracticeDummy.NextPosition.X";
         internal const string DUMMY_NEXT_POSITION_Y = "PeacefulEnd.PracticeDummy.NextPosition.Y";
+        internal const string DUMMY_LAST_POSITION_X = "PeacefulEnd.PracticeDummy.LastPosition.X";
+        internal const string DUMMY_LAST_POSITION_Y = "PeacefulEnd.PracticeDummy.LastPosition.Y";
         internal const string DUMMY_VELOCITY_X = "PeacefulEnd.PracticeDummy.Velocity.X";
         internal const string DUMMY_VELOCITY_Y = "PeacefulEnd.PracticeDummy.Velocity.Y";
+        internal const string DUMMY_KNOCKBACK_COUNTDOWN = "PeacefulEnd.PracticeDummy.KnockbackCountdown";
 
         // Combat related
         internal const string IS_DUMMY_INVINCIBLE = "PeacefulEnd.PracticeDummy.IsInvincible";

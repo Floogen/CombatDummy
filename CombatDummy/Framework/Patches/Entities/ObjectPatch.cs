@@ -35,11 +35,15 @@ namespace CombatDummy.Framework.Patches.Entities
             {
                 PracticeDummy.Update(__instance, time, environment);
             }
+            else if (KnockbackDummy.IsValid(__instance))
+            {
+                KnockbackDummy.Update(__instance, time, environment);
+            }
         }
 
         private static bool OnExplosionPrefix(Object __instance, ref bool __result, Farmer who, GameLocation location)
         {
-            if (PracticeDummy.IsValid(__instance))
+            if (PracticeDummy.IsValid(__instance) || KnockbackDummy.IsValid(__instance))
             {
                 __result = false;
                 return false;
@@ -53,6 +57,11 @@ namespace CombatDummy.Framework.Patches.Entities
             if (PracticeDummy.IsValid(__instance))
             {
                 PracticeDummy.Draw(__instance, spriteBatch, x, y, alpha);
+                return false;
+            }
+            else if (KnockbackDummy.IsValid(__instance))
+            {
+                KnockbackDummy.Draw(__instance, spriteBatch, x, y, alpha);
                 return false;
             }
 

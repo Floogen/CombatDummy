@@ -1,4 +1,5 @@
 ﻿using CombatDummy.Framework.Objects;
+using CombatDummy.Framework.Utilities;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,6 +25,7 @@ namespace CombatDummy.Framework.Patches.Entities
             harmony.Patch(AccessTools.Method(typeof(Character), nameof(Character.GetBoundingBox), null), postfix: new HarmonyMethod(GetType(), nameof(GetBoundingBoxPostfix)));
             harmony.Patch(AccessTools.Method(_object, nameof(Monster.shedChunks), new[] { typeof(int), typeof(float) }), prefix: new HarmonyMethod(GetType(), nameof(ShedChunksPrefix)));
             harmony.Patch(AccessTools.Method(_object, nameof(Monster.takeDamage), new[] { typeof(int), typeof(int), typeof(int), typeof(bool), typeof(double), typeof(string) }), postfix: new HarmonyMethod(GetType(), nameof(TakeDamagePostfix)));
+            harmony.Patch(AccessTools.Method(_object, nameof(Monster.TakesDamageFromHitbox), new[] { typeof(Rectangle) }), postfix: new HarmonyMethod(GetType(), nameof(TakesDamageFromHitboxPostfix)));
 
             harmony.Patch(AccessTools.Method(_object, nameof(Monster.draw), new[] { typeof(SpriteBatch) }), prefix: new HarmonyMethod(GetType(), nameof(DrawPrefix)));
         }
@@ -41,8 +43,36 @@ namespace CombatDummy.Framework.Patches.Entities
 
         private static void GetBoundingBoxPostfix(Character __instance, ref Rectangle __result)
         {
-            if (MonsterDummy.IsValid(__instance))
+            if (MonsterDummy.IsValid(__instance) && __instance.currentLocation is not null)
             {
+                var tilePosition = new Point(0, 0);
+                if (__instance.modData.TryGetValue(ModDataKeys.MONSTER_HOME_POSITION_X, out var rawHomeX) && int.TryParse(rawHomeX, out var actualHomeX))
+                {
+                    tilePosition.X = actualHomeX;
+                }
+                if (__instance.modData.TryGetValue(ModDataKeys.MONSTER_HOME_POSITION_Y, out var rawHomeY) && int.TryParse(rawHomeY, out var actualHomeY))
+                {
+                    tilePosition.Y = actualHomeY;
+                }
+
+                var practiceDummy = __instance.currentLocation.getObjectAtTile(tilePosition.X, tilePosition.Y);
+                if (KnockbackDummy.IsValid(practiceDummy))
+                {
+                    int knockbackCountdown = 0;
+                    if (practiceDummy.modData.ContainsKey(ModDataKeys.DUMMY_KNOCKBACK_COUNTDOWN) is true)
+                    {
+                        knockbackCountdown = Int32.Parse(practiceDummy.modData[ModDataKeys.DUMMY_KNOCKBACK_COUNTDOWN]);
+                    }
+
+                    // Check if dummy has already been hit / waiting to teleport back
+                    if (knockbackCountdown != int.MaxValue)
+                    {
+                        var position = KnockbackDummy.GetPosition(practiceDummy);
+                        __result.X = (int)position.X + 8;
+                        __result.Y = (int)position.Y + 78;
+                    }
+                }
+
                 // Adjust the bounding box to include the whole dummy sprite
                 __result.Y -= 48;
                 __result.Height = 96;
@@ -65,6 +95,11 @@ namespace CombatDummy.Framework.Patches.Entities
             {
                 MonsterDummy.TakeDamage(__instance, ___invincibleCountdown, __result, damage, xTrajectory, yTrajectory, isBomb, addedPrecision, hitSound);
             }
+        }
+
+        private static void TakesDamageFromHitboxPostfix(Monster __instance, ref bool __result, Rectangle area_of_effect)
+        {
+
         }
 
         [HarmonyPriority(Priority.High)]

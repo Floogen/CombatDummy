@@ -28,7 +28,6 @@ namespace CombatDummy.Framework.Objects
             var tilePosition = instance.TileLocation * 64f;
             bool hasMonster = location.isCharacterAtTile(tileLocation) is Monster monster && MonsterDummy.IsValid(monster);
 
-            // TODO: Implement Monster patch to use hidden monster that will transfer its "damage" to the target dummy
             if (hasMonster is false)
             {
                 var dummyMonster = new Monster("Mummy", tilePosition)
@@ -39,9 +38,11 @@ namespace CombatDummy.Framework.Objects
                     HideShadow = true
                 };
                 dummyMonster.modData[ModDataKeys.MONSTER_DUMMY_FLAG] = true.ToString();
+                dummyMonster.modData[ModDataKeys.MONSTER_HOME_POSITION_X] = tileLocation.X.ToString();
+                dummyMonster.modData[ModDataKeys.MONSTER_HOME_POSITION_Y] = tileLocation.Y.ToString();
                 location.characters.Add(dummyMonster);
 
-                CombatDummy.monitor.Log($"HERE: {instance.TileLocation} | {dummyMonster.getTileLocation()}", LogLevel.Debug);
+                CombatDummy.monitor.Log($"Added dummy monster at the following location: {instance.TileLocation} | {dummyMonster.getTileLocation()}", LogLevel.Trace);
             }
 
             var practiceDummy = instance;
