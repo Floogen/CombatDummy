@@ -1,0 +1,12 @@
+﻿[
+  {
+    "$ItemType": "BigCraftable",
+    "ID": "PracticeDummy",
+    "Texture": "Sprites/target_dummy.png:0"
+  },
+  {
+    "$ItemType": "BigCraftable",
+    "ID": "KnockbackDummy",
+    "Texture": "Sprites/knockback_target_dummy.png:0"
+  }
+]
