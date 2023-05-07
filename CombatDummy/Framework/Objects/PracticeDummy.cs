@@ -1,10 +1,11 @@
 ﻿using CombatDummy.Framework.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.BellsAndWhistles;
 using StardewValley.Monsters;
 using System;
-using System.Linq;
 using Object = StardewValley.Object;
 
 namespace CombatDummy.Framework.Objects
@@ -23,20 +24,14 @@ namespace CombatDummy.Framework.Objects
 
         public static void Update(Object instance, GameTime time, GameLocation location)
         {
-            bool hasMonster = false;
-
-            foreach (var monster in location.characters.Where(c => c is Monster && c is not null))
-            {
-                if (monster.Position / 64f == instance.TileLocation)
-                {
-                    hasMonster = true;
-                }
-            }
+            var tileLocation = instance.TileLocation;
+            var tilePosition = instance.TileLocation * 64f;
+            bool hasMonster = location.isCharacterAtTile(tileLocation) is Monster monster && MonsterDummy.IsValid(monster);
 
             // TODO: Implement Monster patch to use hidden monster that will transfer its "damage" to the target dummy
             if (hasMonster is false)
             {
-                var dummyMonster = new Monster("Mummy", instance.TileLocation * 64f)
+                var dummyMonster = new Monster("Mummy", tilePosition)
                 {
                     Speed = 0,
                     DamageToFarmer = 0,
@@ -46,7 +41,7 @@ namespace CombatDummy.Framework.Objects
                 dummyMonster.modData[ModDataKeys.MONSTER_DUMMY_FLAG] = true.ToString();
                 location.characters.Add(dummyMonster);
 
-                CombatDummy.monitor.Log($"HERE: {instance.TileLocation} | {dummyMonster.Position / 64f}", LogLevel.Debug);
+                CombatDummy.monitor.Log($"HERE: {instance.TileLocation} | {dummyMonster.getTileLocation()}", LogLevel.Debug);
             }
 
             var practiceDummy = instance;
@@ -94,6 +89,29 @@ namespace CombatDummy.Framework.Objects
                     //practiceDummy.modData[ModDataKeys.DUMMY_COLLECTIVE_DAMAGE] = "0";
                     //practiceDummy.modData[ModDataKeys.DUMMY_DAMAGE_COUNTDOWN] = "1000";
                 }
+            }
+        }
+
+        public static void Draw(Object __instance, SpriteBatch spriteBatch, int x, int y, float alpha)
+        {
+            int animationFrame = __instance.modData.TryGetValue(ModDataKeys.DUMMY_ANIMATION_FRAME, out string rawAnimationFrame) is false ? 0 : Int32.Parse(rawAnimationFrame);
+
+            Vector2 scaleFactor = __instance.getScale() * 4f;
+            Vector2 position = Game1.GlobalToLocal(Game1.viewport, new Vector2(x * 64, y * 64 - 64));
+            Rectangle destination = new Rectangle((int)(position.X - scaleFactor.X / 2f) + ((__instance.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (int)(position.Y - scaleFactor.Y / 2f) + ((__instance.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (int)(64f + scaleFactor.X), (int)(128f + scaleFactor.Y / 2f));
+
+            alpha = __instance.modData.TryGetValue(ModDataKeys.IS_DUMMY_INVINCIBLE, out string rawIsInvincible) is false ? alpha : Boolean.Parse(rawIsInvincible) ? 0.75f : alpha;
+            spriteBatch.Draw(CombatDummy.assetManager.PracticeDummyTexture, destination, new Rectangle(animationFrame * 16, 0, 16, 32), Color.White * alpha, 0f, Vector2.Zero, SpriteEffects.None, __instance.getBoundingBox(new Vector2(x, y)).Bottom / 10000f);
+
+            //Vector2 local = Game1.GlobalToLocal(new Vector2(base.getStandingX(), base.getStandingY() - this.Sprite.SpriteHeight * 4 - 64 + base.yJumpOffset));
+            var collectiveDamage = __instance.modData.ContainsKey(ModDataKeys.DUMMY_COLLECTIVE_DAMAGE) ? Int32.Parse(__instance.modData[ModDataKeys.DUMMY_COLLECTIVE_DAMAGE]) : 0;
+            var damageCountdown = __instance.modData.ContainsKey(ModDataKeys.DUMMY_DAMAGE_COUNTDOWN) ? Int32.Parse(__instance.modData[ModDataKeys.DUMMY_DAMAGE_COUNTDOWN]) : 0;
+
+            float adjustedAlpha = damageCountdown <= -1000 ? 1 - (Math.Abs(damageCountdown) / 2200f) : 1f;
+            if (collectiveDamage > 0 && adjustedAlpha > 0)
+            {
+                int yOffset = damageCountdown <= 0 ? (Math.Abs(damageCountdown) / 75) : 0;
+                SpriteText.drawStringHorizontallyCenteredAt(spriteBatch, collectiveDamage.ToString(), (int)position.X + 32, (int)position.Y - 16 - (yOffset * 2), color: 5, alpha: adjustedAlpha);
             }
         }
     }

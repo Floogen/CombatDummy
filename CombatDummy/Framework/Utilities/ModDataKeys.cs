@@ -12,6 +12,12 @@
         internal const string DUMMY_ANIMATION_FRAME = "PeacefulEnd.PracticeDummy.AnimationFrame";
         internal const string DUMMY_ANIMATION_COUNTDOWN = "PeacefulEnd.PracticeDummy.AnimationCountdown";
 
+        // Knockback related
+        internal const string DUMMY_NEXT_POSITION_X = "PeacefulEnd.PracticeDummy.NextPosition.X";
+        internal const string DUMMY_NEXT_POSITION_Y = "PeacefulEnd.PracticeDummy.NextPosition.Y";
+        internal const string DUMMY_VELOCITY_X = "PeacefulEnd.PracticeDummy.Velocity.X";
+        internal const string DUMMY_VELOCITY_Y = "PeacefulEnd.PracticeDummy.Velocity.Y";
+
         // Combat related
         internal const string IS_DUMMY_INVINCIBLE = "PeacefulEnd.PracticeDummy.IsInvincible";
         internal const string DUMMY_COLLECTIVE_DAMAGE = "PeacefulEnd.PracticeDummy.CollectiveDamage";
