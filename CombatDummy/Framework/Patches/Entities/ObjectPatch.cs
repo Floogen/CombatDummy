@@ -1,4 +1,5 @@
 ﻿using CombatDummy.Framework.Objects;
+using CombatDummy.Framework.Utilities;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,6 +28,7 @@ namespace CombatDummy.Framework.Patches.Entities
 
             harmony.Patch(AccessTools.Method(_object, nameof(Object.updateWhenCurrentLocation), new[] { typeof(GameTime), typeof(GameLocation) }), postfix: new HarmonyMethod(GetType(), nameof(UpdateWhenCurrentLocationPostfix)));
             harmony.Patch(AccessTools.Method(_object, nameof(Object.onExplosion), new[] { typeof(Farmer), typeof(GameLocation) }), prefix: new HarmonyMethod(GetType(), nameof(OnExplosionPrefix)));
+            harmony.Patch(AccessTools.Method(_object, nameof(Object.isPassable), null), postfix: new HarmonyMethod(GetType(), nameof(IsPassablePostfix)));
         }
 
         private static void UpdateWhenCurrentLocationPostfix(Object __instance, GameTime time, GameLocation environment)
@@ -38,6 +40,23 @@ namespace CombatDummy.Framework.Patches.Entities
             else if (KnockbackDummy.IsValid(__instance))
             {
                 KnockbackDummy.Update(__instance, time, environment);
+            }
+        }
+
+        private static void IsPassablePostfix(Object __instance, ref bool __result)
+        {
+            if (KnockbackDummy.IsValid(__instance))
+            {
+                int knockbackCountdown = 0;
+                if (__instance.modData.ContainsKey(ModDataKeys.DUMMY_KNOCKBACK_COUNTDOWN) is true)
+                {
+                    knockbackCountdown = Int32.Parse(__instance.modData[ModDataKeys.DUMMY_KNOCKBACK_COUNTDOWN]);
+                }
+
+                if (knockbackCountdown != int.MaxValue)
+                {
+                    __result = true;
+                }
             }
         }
 
