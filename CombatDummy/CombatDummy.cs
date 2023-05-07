@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using CombatDummy.Framework.Managers;
 using CombatDummy.Framework.Patches.Entities;
-using CombatDummy.Framework.Patches.GameLocations;
 using StardewValley;
 using StardewValley.Objects;
 using System;
@@ -11,7 +10,7 @@ using System.IO;
 
 namespace CombatDummy
 {
-    public class ModEntry : Mod
+    public class CombatDummy : Mod
     {
         // Shared static helpers
         internal static IMonitor monitor;
@@ -43,7 +42,6 @@ namespace CombatDummy
                 // Apply patches
                 new MonsterPatch(monitor, modHelper).Apply(harmony);
                 new ObjectPatch(monitor, modHelper).Apply(harmony);
-                new GameLocationPatch(monitor, modHelper).Apply(harmony);
             }
             catch (Exception e)
             {

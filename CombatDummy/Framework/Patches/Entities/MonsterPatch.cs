@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using CombatDummy.Framework.Objects;
+using CombatDummy.Framework.Utilities;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -30,7 +32,7 @@ namespace CombatDummy.Framework.Patches.Entities
 
         private static bool UpdatePrefix(Monster __instance, ref int ___invincibleCountdown, GameTime time, GameLocation location)
         {
-            if (__instance is null || __instance.modData.ContainsKey("PeacefulEnd.PracticeDummy.MonsterDummy") is false)
+            if (__instance is null || __instance.modData.ContainsKey(ModDataKeys.MONSTER_DUMMY_FLAG) is false)
             {
                 return true;
             }
@@ -64,7 +66,7 @@ namespace CombatDummy.Framework.Patches.Entities
 
         private static void GetBoundingBoxPostfix(Character __instance, ref Rectangle __result)
         {
-            if (__instance is null || __instance.modData.ContainsKey("PeacefulEnd.PracticeDummy.MonsterDummy") is false)
+            if (__instance is null || __instance.modData.ContainsKey(ModDataKeys.MONSTER_DUMMY_FLAG) is false)
             {
                 return;
             }
@@ -76,7 +78,7 @@ namespace CombatDummy.Framework.Patches.Entities
 
         private static bool ShedChunksPrefix(Monster __instance, int number, float scale)
         {
-            if (__instance is null || __instance.modData.ContainsKey("PeacefulEnd.PracticeDummy.MonsterDummy") is false)
+            if (__instance is null || __instance.modData.ContainsKey(ModDataKeys.MONSTER_DUMMY_FLAG) is false)
             {
                 return true;
             }
@@ -86,7 +88,7 @@ namespace CombatDummy.Framework.Patches.Entities
 
         private static void TakeDamagePostfix(Monster __instance, int ___invincibleCountdown, int __result, int damage, int xTrajectory, int yTrajectory, bool isBomb, double addedPrecision, string hitSound)
         {
-            if (__instance is null || __instance.modData.ContainsKey("PeacefulEnd.PracticeDummy.MonsterDummy") is false)
+            if (__instance is null || __instance.modData.ContainsKey(ModDataKeys.MONSTER_DUMMY_FLAG) is false)
             {
                 return;
             }
@@ -95,46 +97,47 @@ namespace CombatDummy.Framework.Patches.Entities
             // If it does not, delete this monster
             var tilePosition = __instance.getTileLocationPoint();
             var practiceDummy = __instance.currentLocation.getObjectAtTile(tilePosition.X, tilePosition.Y);
-            if (practiceDummy is null || practiceDummy.Name != "PracticeDummy")
+            if (PracticeDummy.IsValid(practiceDummy) is false)
             {
                 __instance.currentLocation.characters.Remove(__instance);
                 return;
             }
+
             _monitor.LogOnce($"[{DateTime.Now.ToString("T")}] {__instance.xVelocity} vs {yTrajectory}", LogLevel.Debug);
 
             // Label the damage amount
             int damageAmount = __result;
 
             // Cache the hit data to the practice dummy
-            bool isInvincible = practiceDummy.modData.TryGetValue("PeacefulEnd.PracticeDummy.IsInvincible", out string rawIsInvincible) is true ? Boolean.Parse(rawIsInvincible) : false;
+            bool isInvincible = practiceDummy.modData.TryGetValue(ModDataKeys.IS_DUMMY_INVINCIBLE, out string rawIsInvincible) is true ? Boolean.Parse(rawIsInvincible) : false;
             if (isInvincible is false)
             {
                 if (damageAmount > 0)
                 {
-                    var collectiveDamage = practiceDummy.modData.ContainsKey("PeacefulEnd.PracticeDummy.CollectiveDamage") ? Int32.Parse(practiceDummy.modData["PeacefulEnd.PracticeDummy.CollectiveDamage"]) : 0;
-                    var damageCountdown = practiceDummy.modData.ContainsKey("PeacefulEnd.PracticeDummy.DamageCountdown") ? Int32.Parse(practiceDummy.modData["PeacefulEnd.PracticeDummy.DamageCountdown"]) : 0;
+                    var collectiveDamage = practiceDummy.modData.ContainsKey(ModDataKeys.DUMMY_COLLECTIVE_DAMAGE) ? Int32.Parse(practiceDummy.modData[ModDataKeys.DUMMY_COLLECTIVE_DAMAGE]) : 0;
+                    var damageCountdown = practiceDummy.modData.ContainsKey(ModDataKeys.DUMMY_DAMAGE_COUNTDOWN) ? Int32.Parse(practiceDummy.modData[ModDataKeys.DUMMY_DAMAGE_COUNTDOWN]) : 0;
                     if (damageCountdown <= 0)
                     {
                         collectiveDamage = 0;
                     }
                     damageCountdown = 1000;
 
-                    practiceDummy.modData["PeacefulEnd.PracticeDummy.CollectiveDamage"] = (collectiveDamage + damageAmount).ToString();
-                    practiceDummy.modData["PeacefulEnd.PracticeDummy.DamageCountdown"] = damageCountdown.ToString();
+                    practiceDummy.modData[ModDataKeys.DUMMY_COLLECTIVE_DAMAGE] = (collectiveDamage + damageAmount).ToString();
+                    practiceDummy.modData[ModDataKeys.DUMMY_DAMAGE_COUNTDOWN] = damageCountdown.ToString();
                     //__instance.debris.Add(new Debris(damageAmount, new Vector2(practiceDummyBox.Center.X + 16, practiceDummyBox.Center.Y), false ? Color.Yellow : new Color(255, 130, 0), false ? (1f + (float)damageAmount / 300f) : 1f, Game1.player));
                 }
                 if (___invincibleCountdown > 0)
                 {
-                    practiceDummy.modData["PeacefulEnd.PracticeDummy.IsInvincible"] = true.ToString();
-                    practiceDummy.modData["PeacefulEnd.PracticeDummy.InvincibleCountdown"] = ___invincibleCountdown.ToString();
+                    practiceDummy.modData[ModDataKeys.IS_DUMMY_INVINCIBLE] = true.ToString();
+                    practiceDummy.modData[ModDataKeys.DUMMY_INVINCIBLE_COUNTDOWN] = ___invincibleCountdown.ToString();
                 }
 
-                bool isAnimating = practiceDummy.modData.TryGetValue("PeacefulEnd.PracticeDummy.IsAnimating", out string rawIsAnimating) is true ? Boolean.Parse(rawIsAnimating) : false;
+                bool isAnimating = practiceDummy.modData.TryGetValue(ModDataKeys.IS_DUMMY_ANIMATING, out string rawIsAnimating) is true ? Boolean.Parse(rawIsAnimating) : false;
                 if (isAnimating is false)
                 {
-                    practiceDummy.modData["PeacefulEnd.PracticeDummy.IsAnimating"] = true.ToString();
-                    practiceDummy.modData["PeacefulEnd.PracticeDummy.AnimationCountdown"] = ModEntry.ANIMATION_COOLDOWN.ToString();
-                    practiceDummy.modData["PeacefulEnd.PracticeDummy.AnimationFrame"] = "1";
+                    practiceDummy.modData[ModDataKeys.IS_DUMMY_ANIMATING] = true.ToString();
+                    practiceDummy.modData[ModDataKeys.DUMMY_ANIMATION_COUNTDOWN] = CombatDummy.ANIMATION_COOLDOWN.ToString();
+                    practiceDummy.modData[ModDataKeys.DUMMY_ANIMATION_FRAME] = "1";
                 }
             }
         }
@@ -142,7 +145,7 @@ namespace CombatDummy.Framework.Patches.Entities
         [HarmonyPriority(Priority.High)]
         private static bool DrawPrefix(Monster __instance, SpriteBatch b)
         {
-            if (__instance is null || __instance.modData.ContainsKey("PeacefulEnd.PracticeDummy.MonsterDummy") is false)
+            if (__instance is null || __instance.modData.ContainsKey(ModDataKeys.MONSTER_DUMMY_FLAG) is false)
             {
                 return true;
             }
