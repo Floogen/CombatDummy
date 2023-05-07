@@ -1,10 +1,8 @@
-﻿using HarmonyLib;
-using Microsoft.Xna.Framework;
-using StardewModdingAPI;
-using CombatDummy.Framework.Managers;
+﻿using CombatDummy.Framework.Managers;
 using CombatDummy.Framework.Patches.Entities;
+using HarmonyLib;
+using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Objects;
 using System;
 using System.IO;
 

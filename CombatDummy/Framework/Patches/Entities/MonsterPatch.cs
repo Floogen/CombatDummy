@@ -7,7 +7,6 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Monsters;
 using System;
-using System.Reflection;
 
 namespace CombatDummy.Framework.Patches.Entities
 {

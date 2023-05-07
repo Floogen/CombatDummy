@@ -1,11 +1,5 @@
-﻿using StardewModdingAPI;
-using CombatDummy.Framework.Interfaces;
-using StardewValley.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CombatDummy.Framework.Interfaces;
+using StardewModdingAPI;
 
 namespace CombatDummy.Framework.Managers
 {
