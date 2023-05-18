@@ -8,6 +8,7 @@ namespace CombatDummy.Framework.Managers
     {
         internal Texture2D PracticeDummyTexture { get; }
         internal Texture2D KnockbackDummyTexture { get; }
+        internal Texture2D MaxHitDummyTexture { get; }
 
         public AssetManager(IModHelper helper)
         {
@@ -17,6 +18,7 @@ namespace CombatDummy.Framework.Managers
             // Load in the asset tilesheet
             PracticeDummyTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "PracticeDummy", "Sprites", "target_dummy.png"));
             KnockbackDummyTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "PracticeDummy", "Sprites", "knockback_target_dummy.png"));
+            MaxHitDummyTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "PracticeDummy", "Sprites", "max_hit_target_dummy.png"));
         }
     }
 }

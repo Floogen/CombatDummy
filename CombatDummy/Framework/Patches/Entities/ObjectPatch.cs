@@ -41,6 +41,10 @@ namespace CombatDummy.Framework.Patches.Entities
             {
                 KnockbackDummy.Update(__instance, time, environment);
             }
+            else if (MaxHitDummy.IsValid(__instance))
+            {
+                MaxHitDummy.Update(__instance, time, environment);
+            }
         }
 
         private static void IsPassablePostfix(Object __instance, ref bool __result)
@@ -62,7 +66,7 @@ namespace CombatDummy.Framework.Patches.Entities
 
         private static bool OnExplosionPrefix(Object __instance, ref bool __result, Farmer who, GameLocation location)
         {
-            if (PracticeDummy.IsValid(__instance) || KnockbackDummy.IsValid(__instance))
+            if (PracticeDummy.IsValid(__instance) || KnockbackDummy.IsValid(__instance) || MaxHitDummy.IsValid(__instance))
             {
                 __result = false;
                 return false;
@@ -81,6 +85,11 @@ namespace CombatDummy.Framework.Patches.Entities
             else if (KnockbackDummy.IsValid(__instance))
             {
                 KnockbackDummy.Draw(__instance, spriteBatch, x, y, alpha);
+                return false;
+            }
+            else if (MaxHitDummy.IsValid(__instance))
+            {
+                MaxHitDummy.Draw(__instance, spriteBatch, x, y, alpha);
                 return false;
             }
 

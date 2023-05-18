@@ -25,6 +25,9 @@
 		<None Update="Framework\Assets\PracticeDummy\i18n\default.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		<None Update="Framework\Assets\PracticeDummy\Sprites\max_hit_target_dummy.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="Framework\Assets\PracticeDummy\Sprites\knockback_target_dummy.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

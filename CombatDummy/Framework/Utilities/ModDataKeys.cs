@@ -5,6 +5,7 @@
         // Entity related
         internal const string PRACTICE_DUMMY_NAME = "PracticeDummy";
         internal const string KNOCKBACK_DUMMY_NAME = "KnockbackDummy";
+        internal const string MAX_HIT_DUMMY_NAME = "MaxHitDummy";
         internal const string MONSTER_DUMMY_FLAG = "PeacefulEnd.PracticeDummy.MonsterDummy";
 
         // Monster related

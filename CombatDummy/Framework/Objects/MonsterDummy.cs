@@ -33,7 +33,7 @@ namespace CombatDummy.Framework.Objects
                 tilePosition.Y = actualHomeY;
             }
             var practiceDummy = instance.currentLocation.getObjectAtTile(tilePosition.X, tilePosition.Y);
-            if (PracticeDummy.IsValid(practiceDummy) is false && KnockbackDummy.IsValid(practiceDummy) is false)
+            if (PracticeDummy.IsValid(practiceDummy) is false && KnockbackDummy.IsValid(practiceDummy) is false && MaxHitDummy.IsValid(practiceDummy) is false)
             {
                 instance.currentLocation.characters.Remove(instance);
                 return;
@@ -66,7 +66,14 @@ namespace CombatDummy.Framework.Objects
                     }
                     damageCountdown = 1000;
 
-                    practiceDummy.modData[ModDataKeys.DUMMY_COLLECTIVE_DAMAGE] = (collectiveDamage + damageAmount).ToString();
+                    if (MaxHitDummy.IsValid(practiceDummy))
+                    {
+                        practiceDummy.modData[ModDataKeys.DUMMY_COLLECTIVE_DAMAGE] = damageAmount > collectiveDamage ? damageAmount.ToString() : collectiveDamage.ToString();
+                    }
+                    else
+                    {
+                        practiceDummy.modData[ModDataKeys.DUMMY_COLLECTIVE_DAMAGE] = (collectiveDamage + damageAmount).ToString();
+                    }
                     practiceDummy.modData[ModDataKeys.DUMMY_DAMAGE_COUNTDOWN] = damageCountdown.ToString();
                     //__instance.debris.Add(new Debris(damageAmount, new Vector2(practiceDummyBox.Center.X + 16, practiceDummyBox.Center.Y), false ? Color.Yellow : new Color(255, 130, 0), false ? (1f + (float)damageAmount / 300f) : 1f, Game1.player));
                 }
@@ -101,7 +108,7 @@ namespace CombatDummy.Framework.Objects
             }
 
             var practiceDummy = instance.currentLocation.getObjectAtTile(tilePosition.X, tilePosition.Y);
-            if (PracticeDummy.IsValid(practiceDummy) is false && KnockbackDummy.IsValid(practiceDummy) is false)
+            if (PracticeDummy.IsValid(practiceDummy) is false && KnockbackDummy.IsValid(practiceDummy) is false && MaxHitDummy.IsValid(practiceDummy) is false)
             {
                 instance.currentLocation.characters.Remove(instance);
                 return;
