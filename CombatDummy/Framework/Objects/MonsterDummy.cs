@@ -46,7 +46,7 @@ namespace CombatDummy.Framework.Objects
                 KnockbackDummy.SetVelocity(practiceDummy, velocity);
                 KnockbackDummy.SetPosition(practiceDummy, KnockbackDummy.GetPosition(practiceDummy), velocity);
 
-                practiceDummy.modData[ModDataKeys.DUMMY_KNOCKBACK_COUNTDOWN] = 1500.ToString();
+                practiceDummy.modData[ModDataKeys.DUMMY_KNOCKBACK_COUNTDOWN] = 2000.ToString();
             }
 
             // Label the damage amount
