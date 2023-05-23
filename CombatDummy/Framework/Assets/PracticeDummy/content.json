@@ -13,5 +13,27 @@
     "$ItemType": "BigCraftable",
     "ID": "MaxHitDummy",
     "Texture": "Sprites/max_hit_target_dummy.png:0"
+  },
+
+  {
+    "$ItemType": "ShopEntry",
+    "Item": { "Value": "PeacefulEnd.PracticeDummy/PracticeDummy" },
+    "ShopId": "AdventurerGuild",
+    "Cost": 500,
+    "MaxSold": 5
+  },
+  {
+    "$ItemType": "ShopEntry",
+    "Item": { "Value": "PeacefulEnd.PracticeDummy/KnockbackDummy" },
+    "ShopId": "AdventurerGuild",
+    "Cost": 500,
+    "MaxSold": 5
+  },
+  {
+    "$ItemType": "ShopEntry",
+    "Item": { "Value": "PeacefulEnd.PracticeDummy/MaxHitDummy" },
+    "ShopId": "AdventurerGuild",
+    "Cost": 500,
+    "MaxSold": 5
   }
 ]
