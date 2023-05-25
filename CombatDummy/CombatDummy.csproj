@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<Version>1.0.0</Version>
+		<Version>1.1.0</Version>
 		<TargetFramework>net5.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<EnableHarmony>true</EnableHarmony>
@@ -26,7 +26,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="Framework\Assets\PracticeDummy\Sprites\max_hit_target_dummy.png">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="Framework\Assets\PracticeDummy\Sprites\knockback_target_dummy.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
