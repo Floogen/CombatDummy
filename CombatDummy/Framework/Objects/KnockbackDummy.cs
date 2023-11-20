@@ -112,7 +112,7 @@ namespace CombatDummy.Framework.Objects
                 dummyMonster.modData[ModDataKeys.MONSTER_HOME_POSITION_Y] = tileLocation.Y.ToString();
                 location.characters.Add(dummyMonster);
 
-                CombatDummy.monitor.Log($"Added dummy monster at the following location: {instance.TileLocation} | {dummyMonster.getTileLocation()}", LogLevel.Trace);
+                CombatDummy.monitor.Log($"Added dummy monster at the following location: {instance.TileLocation} | {dummyMonster.Tile}", LogLevel.Trace);
             }
 
             if (knockbackDummy.modData.TryGetValue(ModDataKeys.IS_DUMMY_ANIMATING, out string rawIsAnimating) && Boolean.Parse(rawIsAnimating) is true)
@@ -199,7 +199,7 @@ namespace CombatDummy.Framework.Objects
             Rectangle destination = new Rectangle((int)(position.X - scaleFactor.X / 2f) + ((__instance.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (int)(position.Y - scaleFactor.Y / 2f) + ((__instance.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (int)(64f + scaleFactor.X), (int)(128f + scaleFactor.Y / 2f));
 
             alpha = __instance.modData.TryGetValue(ModDataKeys.IS_DUMMY_INVINCIBLE, out string rawIsInvincible) is false ? alpha : Boolean.Parse(rawIsInvincible) ? 0.75f : alpha;
-            spriteBatch.Draw(CombatDummy.assetManager.KnockbackDummyTexture, destination, new Rectangle(animationFrame * 16, 0, 16, 32), Color.White * alpha, 0f, Vector2.Zero, SpriteEffects.None, __instance.getBoundingBox(new Vector2(x, y)).Bottom / 10000f);
+            spriteBatch.Draw(CombatDummy.assetManager.KnockbackDummyTexture, destination, new Rectangle(animationFrame * 16, 0, 16, 32), Color.White * alpha, 0f, Vector2.Zero, SpriteEffects.None, __instance.GetBoundingBox().Bottom / 10000f);
 
             //Vector2 local = Game1.GlobalToLocal(new Vector2(base.getStandingX(), base.getStandingY() - this.Sprite.SpriteHeight * 4 - 64 + base.yJumpOffset));
             var collectiveDamage = __instance.modData.ContainsKey(ModDataKeys.DUMMY_COLLECTIVE_DAMAGE) ? Int32.Parse(__instance.modData[ModDataKeys.DUMMY_COLLECTIVE_DAMAGE]) : 0;
@@ -207,7 +207,7 @@ namespace CombatDummy.Framework.Objects
 
             if (collectiveDamage > 0 && damageCountdown > 0 && damageCountdown != int.MaxValue)
             {
-                SpriteText.drawStringHorizontallyCenteredAt(spriteBatch, collectiveDamage.ToString(), (int)position.X + 32, (int)position.Y - 16, color: 5, alpha: 1f);
+                SpriteText.drawStringHorizontallyCenteredAt(spriteBatch, collectiveDamage.ToString(), (int)position.X + 32, (int)position.Y - 16, color: SpriteText.color_Red, alpha: 1f);
             }
         }
     }
